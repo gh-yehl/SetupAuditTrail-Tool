@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <script src="/static/js/jquery-3.6.0.js"></script>
+    <script src="/static/js/bootstrap.bundle.js"></script>
+</head>
+<body>
+    <div class="main">
+        <form action="" method="post" enctype="multipart/form-data" style="padding: 15px">
+          <div class="form-group">
+            <p class="help-block">Choose the downloaded AuditTrail File, then click the Submit button to filter.</p>
+            <label for="exampleInputFile">Audit Trail File: </label>
+            <input type="file" id="inputFile" name="myFile">
+
+          </div>
+          <button type="submit" class="btn btn-danger">Submit</button>
+        </form>
+
+        <br>
+
+        <div id="information" class="container-md">
+
+            <div id="dateFilter" class="row">
+                <div class="col-sm-3">
+                    <label for="startDate">Start Date: </label>
+                    <input type="date" id="startDate" value="2022-01-01" onchange="filterData(this)">
+                </div>
+                <div class="col-sm-3">
+                    <label for="endDate">End Date: </label>
+                    <input type="date" id="endDate" value="2022-12-31" onchange="filterData(this)">
+                </div>
+                <div class="col-sm-3">
+                    <label for="user">User: </label>
+                    <input type="input" id="user" onchange="filterData(this)">
+                </div>
+                <div class="col-sm-3">
+                    <label for="action">Action: </label>
+                    <input type="input" id="action" onchange="filterData(this)">
+                </div>
+            </div>
+            <br>
+
+            <div id="result">
+              <table id="data" class="table table-striped">
+                  <thead>
+                      <tr>
+                          <th>Date</th>
+                          <th>User</th>
+                          <th>Source Namespace Prefix</th>
+                          <th>Action</th>
+                          <th>Section</th>
+                          <th>Delegate User</th>
+                      </tr>
+                  </thead>
+                  <tbody id="dataset">
+                  {% for audit in test %}
+                      <tr>
+                          <td>{{ audit.date }}</td>
+                          <td>{{ audit.user }}</td>
+                          <td>{{ audit.source }}</td>
+                          <td>{{ audit.action }}</td>
+                          <td>{{ audit.section }}</td>
+                          <td>{{ audit.delegateUser }}</td>
+                      </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+    function filterData(obj) {
+        if(obj != null && obj != undefined && obj.value.indexOf('?') != -1) {
+            alert('特殊字符 ? 不允许');
+        }
+
+        parameterData = {
+            "startDate":$("#startDate").val(),
+            "endDate":$("#endDate").val(),
+            "user":$("#user").val(),
+            "action":$("#action").val()
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '/filterData', //ajax请求服务器的url
+            data: parameterData,
+            success:function (res) { //如果请求成功，服务器成功返回，则执行此函数
+              console.log("执行success回调函数");
+              var arrList = eval(res)
+              $("#dataset").html(parseRecords(arrList))
+            },
+            //dataFilter:function(data){
+              //console.log("执行dataFilter回调函数，此函数用来对服务器返回的数据进行过滤");
+              //if (data === 'hello');
+              //return 'hi';
+            //},
+            beforeSend: function(data){
+              console.log("执行beforeSend回调函数，此回调函数最先被执行");
+            },
+            error: function (err) { //如果Ajax请求过程出现错误，则执行此回调函数
+              console.log(err);
+              console.log("请求中出现错误回调此函数");
+            },
+            complete:function () {
+              console.log("Ajax请求最后回调的函数");
+            }
+          });
+    }
+
+    function parseRecords(records) {
+        var html_data = '';
+        for(let audit of records) {
+            html_data = html_data + '<tr>';
+            html_data = html_data + '<td>' + audit.date + '</td>';
+            html_data = html_data + '<td>' + audit.user + '</td>';
+            html_data = html_data + '<td>' + audit.source + '</td>';
+            html_data = html_data + '<td>' + audit.action + '</td>';
+            html_data = html_data + '<td>' + audit.section + '</td>';
+            html_data = html_data + '<td>' + audit.delegateUser + '</td>';
+            html_data = html_data + '</tr>'
+        }
+        return html_data
+    }
+    {#function filterData() {#}
+    {#    $.ajax({#}
+    {#        url:'FirstAjaxServlet', //ajax请求服务器的url#}
+    {#        success:function (data,mess) { //如果请求成功，服务器成功返回，则执行此函数#}
+    {#          console.log("执行success回调函数");#}
+    {#          alert(data);#}
+    {#          /*alert(data);#}
+    {#          alert(mess);*/#}
+    {#        },#}
+    {#        dataFilter:function(data){#}
+    {#          console.log("执行dataFilter回调函数，此函数用来对服务器返回的数据进行过滤");#}
+    {#          if (data === 'hello');#}
+    {#          return 'hi';#}
+    {#        },#}
+    {#        beforeSend: function(data){#}
+    {#          console.log("执行beforeSend回调函数，此回调函数最先被执行");#}
+    {#        },#}
+    {#        error:function (err) { //如果Ajax请求过程出现错误，则执行此回调函数#}
+    {#          alert(err+"This is an error, please try it later");#}
+    {#          console.log("请求中出现错误回调此函数");#}
+    {#        },#}
+    {#        complete:function () {#}
+    {#          console.log("Ajax请求最后回调的函数")#}
+    {#        }#}
+    {#      });#}
+    {#}#}
+
+</script>
+
+</html>
