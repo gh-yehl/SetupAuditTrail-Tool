@@ -45,7 +45,7 @@ def filterData():
              ]
 
     #Only display first/latest 200 rows on the page
-    display_df = df.head(100)
+    display_df = df.head(200)
 
     filteredList = convertList(display_df.values.tolist())
     json_str = json.dumps([x.dump() for x in filteredList])
