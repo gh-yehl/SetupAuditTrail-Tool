@@ -14,7 +14,7 @@ def home():
         #Save File
         data.to_csv('audit.csv', index=False)
 
-        #Display default 200 rows
+        #Display default 300 rows
         result = data.head(300)
         data.columns = ['date','user','source','action','section','delegateUser']
 
@@ -44,8 +44,8 @@ def filterData():
              & (df['action'].str.contains(input_action))
              ]
 
-    #Only display first/latest 200 rows on the page
-    display_df = df.head(200)
+    #Only display first/latest 300 rows on the page
+    display_df = df.head(300)
 
     filteredList = convertList(display_df.values.tolist())
     json_str = json.dumps([x.dump() for x in filteredList])
