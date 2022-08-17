@@ -50,7 +50,6 @@ def filterData():
     filteredList = convertList(display_df.values.tolist())
     json_str = json.dumps([x.dump() for x in filteredList])
     return json_str
-        #json.dumps([1,2])
 
 
 def convertList(recordList):
