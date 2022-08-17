@@ -78,7 +78,7 @@
 <script>
     function filterData(obj) {
         if(obj != null && obj != undefined && obj.value.indexOf('?') != -1) {
-            alert('特殊字符 ? 不允许');
+            alert('? NOT Allowed in Filter Criteria');
         }
 
         parameterData = {
@@ -90,27 +90,22 @@
 
         $.ajax({
             type: "POST",
-            url: '/filterData', //ajax请求服务器的url
+            url: '/filterData',
             data: parameterData,
-            success:function (res) { //如果请求成功，服务器成功返回，则执行此函数
-              console.log("执行success回调函数");
+            success:function (res) {
+              console.log("success callback");
               var arrList = eval(res)
               $("#dataset").html(parseRecords(arrList))
             },
-            //dataFilter:function(data){
-              //console.log("执行dataFilter回调函数，此函数用来对服务器返回的数据进行过滤");
-              //if (data === 'hello');
-              //return 'hi';
-            //},
             beforeSend: function(data){
-              console.log("执行beforeSend回调函数，此回调函数最先被执行");
+              console.log("Prepare... before Ajax Request sends");
             },
-            error: function (err) { //如果Ajax请求过程出现错误，则执行此回调函数
+            error: function (err) {
               console.log(err);
-              console.log("请求中出现错误回调此函数");
+              console.log("Ajax Request Error Encounterred");
             },
             complete:function () {
-              console.log("Ajax请求最后回调的函数");
+              console.log("Ajax Request Process Complete");
             }
           });
     }
@@ -129,32 +124,6 @@
         }
         return html_data
     }
-    {#function filterData() {#}
-    {#    $.ajax({#}
-    {#        url:'FirstAjaxServlet', //ajax请求服务器的url#}
-    {#        success:function (data,mess) { //如果请求成功，服务器成功返回，则执行此函数#}
-    {#          console.log("执行success回调函数");#}
-    {#          alert(data);#}
-    {#          /*alert(data);#}
-    {#          alert(mess);*/#}
-    {#        },#}
-    {#        dataFilter:function(data){#}
-    {#          console.log("执行dataFilter回调函数，此函数用来对服务器返回的数据进行过滤");#}
-    {#          if (data === 'hello');#}
-    {#          return 'hi';#}
-    {#        },#}
-    {#        beforeSend: function(data){#}
-    {#          console.log("执行beforeSend回调函数，此回调函数最先被执行");#}
-    {#        },#}
-    {#        error:function (err) { //如果Ajax请求过程出现错误，则执行此回调函数#}
-    {#          alert(err+"This is an error, please try it later");#}
-    {#          console.log("请求中出现错误回调此函数");#}
-    {#        },#}
-    {#        complete:function () {#}
-    {#          console.log("Ajax请求最后回调的函数")#}
-    {#        }#}
-    {#      });#}
-    {#}#}
 
 </script>
 
